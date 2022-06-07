@@ -1,0 +1,20 @@
+- hosts: nuc
+  remote_user: mosquitto
+  tasks:
+    - name: Pull latest image
+      containers.podman.podman_image:
+        name: docker.io/homeassistant/home-assistant
+      register: image
+
+    - name: Restart service container-homeassistant.service
+      ansible.builtin.systemd:
+        state: restarted
+        daemon_reload: yes
+        name: container-homeassistant.service
+        scope: user
+      when: image.changed
+
+    - name: Prune images
+      ansible.builtin.shell:
+        cmd: podman image prune -f
+      when: image.changed
