@@ -4,6 +4,7 @@
     - name: Pull latest image
       containers.podman.podman_image:
         name: docker.io/homeassistant/home-assistant
+        force: yes
       register: image
 
     - name: Restart service container-homeassistant.service
